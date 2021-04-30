@@ -32,25 +32,15 @@ else
 				tmux set -g status-justify left
 				tmux set -g status-bg colour0
 				tmux set -g status-fg colour202
-				tmux set -g status-attr dim
 				tmux set -g status-left ''
 				tmux set -g status-right '#[fg=colour2,bg=colour0,bold] %d/%m #[fg=colour3,bg=colour8,bold] %H:%M:%S '
 				tmux set -g status-right-length 50
 				tmux set -g status-left-length 20
-				tmux setw -g window-status-current-fg colour2
-				tmux setw -g window-status-current-bg colour0
-				tmux setw -g window-status-current-attr bold
 				tmux setw -g window-status-current-format ' #I#[fg=colour249]:#[fg=colour255]#W#[fg=colour249]#F '
-				tmux setw -g window-status-bell-attr bold
-				tmux setw -g window-status-bell-fg colour255
-				tmux setw -g window-status-bell-bg colour1
-				tmux set -g message-attr bold
-				tmux set -g message-fg colour232
-				tmux set -g message-bg colour16
 				tmux set-window-option -g mode-keys vi
 				tmux bind-key -T copy-mode-vi 'v' send -X begin-selection
 				tmux bind-key -T copy-mode-vi 'y' send -X copy-selection-and-cancel
-				tmux select-window -t $1:1
+				#tmux select-window -t $1:1
 				tmux split-window -h -p 75
 				tmux select-pane -t 2 
 				tmux split-window -v -p 25

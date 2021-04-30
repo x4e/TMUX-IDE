@@ -1,13 +1,33 @@
 #!/bin/bash
-clear
-prevpath=$1
-ls  -la $(tmux display-message -t 2 -p -F "#{pane_current_path}" )| awk '{if ($1 ~ /d.*/) print "\033[34m" $9; else print "\033[32m"  $9}'
-while : 
-do  
-		if [ "$prevpath" !=  "$(ls $(tmux display-message -t 2 -p -F '#{pane_current_path}'))" ]
-		then
-				clear
-				ls  -la $(tmux display-message -t 2 -p -F "#{pane_current_path}" )| awk '{if ($1 ~ /d.*/) print "\033[34m" $9; else print "\033[32m"  $9}'
-				prevpath=$(ls $(tmux display-message -t 2 -p -F "#{pane_current_path}" ))
-		fi
-done 
+
+# Auto refreshing file tree
+# The tree respects exclusions by VCS systems like git
+
+# Author: x4e <x4e@protonmail.com>
+# Dependencies: bash, ripgrep, tree, less, inotifywait
+
+recursive_children () {
+	local pids=$(ps -o pid= --ppid "$1")
+	
+	for pid in $pids; do
+		recursive_children "$pid"
+	done
+	
+	echo "$pids"
+}
+
+runTree() {
+	clear
+	rg --files | tree -C --fromfile --noreport | less -KQR~ --mouse --chop-long-lines
+}
+
+while [ true ]; do
+	# Fork process and display tree
+	runTree pidFile &
+	
+	# Wait for a change in the file tree, then refresh
+	inotifywait -qr -e modify -e move -e move_self -e delete -e delete_self -e create -e unmount .
+	
+	# Recursively kill child processes
+	kill $(recursive_children $$)
+done
