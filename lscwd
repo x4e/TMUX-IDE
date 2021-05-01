@@ -26,7 +26,7 @@ while [ true ]; do
 	runTree pidFile &
 	
 	# Wait for a change in the file tree, then refresh
-	inotifywait -qr -e modify -e move -e move_self -e delete -e delete_self -e create -e unmount .
+	inotifywait -qr -e move -e move_self -e delete -e delete_self -e create -e unmount .
 	
 	# Recursively kill child processes
 	kill $(recursive_children $$)
